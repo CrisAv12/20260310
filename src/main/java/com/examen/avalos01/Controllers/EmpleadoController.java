@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
 import com.examen.avalos01.Models.Empleado;
 
 import tools.jackson.databind.ObjectMapper;
@@ -81,10 +82,10 @@ public class EmpleadoController {
 	// Respuesta: 202 Aceptado
 	@PutMapping("/empleados/{ci}")
 	public ResponseEntity<Object> editarEmpleado(@PathVariable("ci") String ci,@RequestBody Empleado emple){
-		/*
-		if (!empleados.containsKey(id)) {
+		//provocando la excepción
+		if (!empleados.containsKey(ci)) {
 			throw new EmpleadoNoEncontradoException();
-		}*/
+		}
 		//elimina el empleado porque ya lo recuperamos en emple
 		empleados.remove(ci);
 		emple.setCi(Integer.parseInt(ci));
