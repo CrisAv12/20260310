@@ -19,9 +19,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.examen.avalos01.Exceptions.VentaNoEncontradaException;
 import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
+import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
+import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
+
+import com.examen.avalos01.Models.Empleado;
+import com.examen.avalos01.Models.Cliente;
 import com.examen.avalos01.Models.Producto;
 import com.examen.avalos01.Models.Venta;
+
 import com.examen.avalos01.Controllers.ProductoController;
+import com.examen.avalos01.Controllers.ClienteController;
+import com.examen.avalos01.Controllers.EmpleadoController;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -101,6 +109,19 @@ public class VentaController {
 	    if (!ProductoController.productos.containsKey(codigoProducto)) {
 	        throw new ProductoNoEncontradoException();
 	    }
+	    
+	    String codigoCliente = String.valueOf(vent.getClien());
+		
+	    if (!ClienteController.clientes.containsKey(codigoCliente)) {
+	        throw new ClienteNoEncontradoException();
+	    }
+
+	    String codigoEmpleado = String.valueOf(vent.getEmp());
+	    		
+	    if (!EmpleadoController.empleados.containsKey(codigoEmpleado)) {
+	        throw new EmpleadoNoEncontradoException();
+	    }
+	    
 		//elimina la venta porque ya lo recuperamos en vent
 		ventas.remove(id);
 		vent.setId(Integer.parseInt(id));

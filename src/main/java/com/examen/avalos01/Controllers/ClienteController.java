@@ -24,7 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 public class ClienteController {
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
-	private static Map<String, Cliente> clientes = new HashMap<>();
+	public static Map<String, Cliente> clientes = new HashMap<>();
 	static {
 		Cliente c1 = new Cliente(10203011,"Viscarra");
 		Cliente c2 = new Cliente(20304022,"Galarza");

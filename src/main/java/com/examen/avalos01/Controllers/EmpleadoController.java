@@ -26,7 +26,7 @@ public class EmpleadoController {
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
-	private static Map<String, Empleado> empleados = new HashMap<>();
+	public static Map<String, Empleado> empleados = new HashMap<>();
 	static {
 		Empleado e1 = new Empleado(1,"Luis Alberto","Morales Loza",70100001,"lmorales@mail.com");
 		Empleado e2 = new Empleado(2,"Juana D.","Martinez",70200002,"jmartinez@mail.com");
