@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
 import com.examen.avalos01.Models.Cliente;
 
 import tools.jackson.databind.ObjectMapper;
@@ -73,10 +74,9 @@ public class ClienteController {
 	// Respuesta: 202 Aceptado
 	@PutMapping("/cliente/{nit}")
 	public ResponseEntity<Object> editarCliente(@PathVariable("nit") String nit,@RequestBody Cliente cli){
-		/*
-		if (!clientes.containsKey(id)) {
+		if (!clientes.containsKey(nit)) {
 			throw new ClienteNoEncontradoException();
-		}*/
+		}
 		//elimina el cliente porque ya lo recuperamos en cli
 		clientes.remove(nit);
 		cli.setNit(Integer.parseInt(nit));

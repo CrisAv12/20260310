@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,13 +17,21 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.examen.avalos01.Exceptions.VentaNoEncontradaException;
+import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
+import com.examen.avalos01.Models.Producto;
 import com.examen.avalos01.Models.Venta;
+import com.examen.avalos01.Controllers.ProductoController;
 
 import tools.jackson.databind.ObjectMapper;
 
 @Controller
 public class VentaController {
-private ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Autowired
+	private ApplicationContext contexto;
+	
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	private static Map<String, Venta> ventas = new HashMap<>();
 	static {
@@ -79,10 +89,18 @@ private ObjectMapper objectMapper = new ObjectMapper();
 	// Respuesta: 202 Aceptado
 	@PutMapping("/venta/{id}")
 	public ResponseEntity<Object> editarEmpleado(@PathVariable("id") String id,@RequestBody Venta vent){
-		/*
+		
+		
 		if (!ventas.containsKey(id)) {
 			throw new VentaNoEncontradaException();
-		}*/
+		}
+		
+		Venta ventaExistente = ventas.get(id);
+		String codigoProducto = String.valueOf(vent.getProd());
+		
+	    if (!ProductoController.productos.containsKey(codigoProducto)) {
+	        throw new ProductoNoEncontradoException();
+	    }
 		//elimina la venta porque ya lo recuperamos en vent
 		ventas.remove(id);
 		vent.setId(Integer.parseInt(id));

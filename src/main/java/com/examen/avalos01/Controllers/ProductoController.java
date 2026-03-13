@@ -15,15 +15,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+
+import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
 import com.examen.avalos01.Models.Producto;
 
 import tools.jackson.databind.ObjectMapper;
 
 @Controller
 public class ProductoController {
-private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
-	private static Map<String, Producto> productos = new HashMap<>();
+	public static void setProductos(Map<String, Producto> productos) {
+		ProductoController.productos = productos;
+	}
+
+
+	public static Map<String, Producto> productos = new HashMap<>();
 	static {
 		Producto p1 = new Producto(101,"Arocarbol",60.50);
 		Producto p2 = new Producto(202,"Ibuprofeno 500 mg",2.75);
@@ -75,10 +82,9 @@ private ObjectMapper objectMapper = new ObjectMapper();
 	// Respuesta: 202 Aceptado
 	@PutMapping("/producto/{codigo}")
 	public ResponseEntity<Object> editarProducto(@PathVariable("codigo") String codigo,@RequestBody Producto pro){
-		/*
-		if (!productos.containsKey(id)) {
+		if (!productos.containsKey(codigo)) {
 			throw new ProductoNoEncontradoException();
-		}*/
+		}
 		//elimina el producto porque ya lo recuperamos en pro
 		productos.remove(codigo);
 		pro.setCodigo(Integer.parseInt(codigo));
