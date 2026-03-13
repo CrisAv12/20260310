@@ -9,9 +9,13 @@ import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
 import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
 import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
 import com.examen.avalos01.Exceptions.VentaNoEncontradaException;
+import com.examen.avalos01.Exceptions.VentaEncontrada;
 
 @ControllerAdvice
 public class EmpleadoExceptionController {
+	
+	// se centraliza el control de las excepciones en esta clase
+	
 	@ExceptionHandler(value=EmpleadoNoEncontradoException.class)
 	public ResponseEntity<Object> empExcepcion(){
 		return new ResponseEntity<>("No se pudo encontrar un empleado con ese C.I.", HttpStatus.NOT_FOUND);
@@ -33,10 +37,16 @@ public class EmpleadoExceptionController {
 	
 	@ExceptionHandler(value=VentaNoEncontradaException.class)
 	public ResponseEntity<Object> venExcepcion(){
-		return new ResponseEntity<>("No se pudo registrar una venta porque no se tiene un elemento", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("No se pudo registrar una venta porque la venta con ese código no existe", HttpStatus.NOT_FOUND);
 	
 	}
 	
+	
+	@ExceptionHandler(value=VentaEncontrada.class)
+	public ResponseEntity<Object> ventaExcepcion(){
+		return new ResponseEntity<>("No se pudo registrar una venta porque YA EXISTE una venta con ese código", HttpStatus.BAD_REQUEST);
+	
+	}
 	
 	
 	

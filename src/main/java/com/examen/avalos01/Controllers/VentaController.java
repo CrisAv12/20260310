@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.examen.avalos01.Exceptions.VentaNoEncontradaException;
 import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
+import com.examen.avalos01.Exceptions.VentaEncontrada;
 import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
 import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
 
@@ -74,6 +75,102 @@ public class VentaController {
 	// Respuesta: 201 creado
 	@PostMapping("/venta")
 	public ResponseEntity<Object> nuevaVenta(@RequestBody Venta vent){
+		
+		/*
+	     * Para probar que salta el error de venta colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 YA EXISTE, lo demas también
+		 * 	{
+				"id": 1003,
+				"emp": 3,
+				"clien": 10203011,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion de venta , que no permite crear venta con UN CÓDIGO EXISTENTE
+	     * */
+		String codigoVentaExistente = String.valueOf(vent.getId());
+		
+		if (ventas.containsKey(codigoVentaExistente)) {
+			System.out.println("entra a la excepcion");
+			throw new VentaEncontrada();
+		}
+		
+		
+		/*
+	     * Para probar que salta el error de producto colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el producto 332332 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 3,
+				"clien": 10203011,
+				"prod": 332332,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del producto
+	     * */
+		//Venta ventaExistente = ventas.get(id);
+		String codigoProducto = String.valueOf(vent.getProd());
+		
+	    if (!ProductoController.productos.containsKey(codigoProducto)) {
+	    	System.out.println("entra a producto");
+	        throw new ProductoNoEncontradoException();
+	    }
+	    
+	    /*
+	     * Para probar que salta el error de cliente colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el cliente 2222222 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 3,
+				"clien": 2222222,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del cliente
+	     * */
+	    
+	    String codigoCliente = String.valueOf(vent.getClien());
+		
+	    if (!ClienteController.clientes.containsKey(codigoCliente)) {
+	    	System.out.println("entra a cliente");
+	        throw new ClienteNoEncontradoException();
+	    }
+	    
+	    /*
+	     * Para probar que salta el error de empleado colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el empleado 676 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 676,
+				"clien": 10203011,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del empleado
+	     * */
+
+	    String codigoEmpleado = String.valueOf(vent.getEmp());
+	    		
+	    if (!EmpleadoController.empleados.containsKey(codigoEmpleado)) {
+	    	System.out.println("entra a empleado");
+	        throw new EmpleadoNoEncontradoException();
+	    }
+	    
+		
+		
+		
 		ventas.put(vent.getId() +"", vent);
 		URI ubicacionRecurso = ServletUriComponentsBuilder
 				.fromCurrentRequest()
@@ -99,22 +196,85 @@ public class VentaController {
 	public ResponseEntity<Object> editarEmpleado(@PathVariable("id") String id,@RequestBody Venta vent){
 		
 		
+		/*
+	     * Para probar que salta el error de venta colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 2000 NO  EXISTE, lo demas sí
+		 * 	{
+				"id": 2000,
+				"emp": 3,
+				"clien": 10203011,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion de venta
+	     * */
+		
 		if (!ventas.containsKey(id)) {
 			throw new VentaNoEncontradaException();
 		}
 		
-		Venta ventaExistente = ventas.get(id);
+		/*
+	     * Para probar que salta el error de producto colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el producto 332332 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 3,
+				"clien": 10203011,
+				"prod": 332332,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del producto
+	     * */
+		//Venta ventaExistente = ventas.get(id);
 		String codigoProducto = String.valueOf(vent.getProd());
 		
 	    if (!ProductoController.productos.containsKey(codigoProducto)) {
 	        throw new ProductoNoEncontradoException();
 	    }
 	    
+	    /*
+	     * Para probar que salta el error de cliente colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el cliente 2222222 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 3,
+				"clien": 2222222,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del cliente
+	     * */
+	    
 	    String codigoCliente = String.valueOf(vent.getClien());
 		
 	    if (!ClienteController.clientes.containsKey(codigoCliente)) {
 	        throw new ClienteNoEncontradoException();
 	    }
+	    
+	    /*
+	     * Para probar que salta el error de empleado colocar lo siguiente:
+	     *
+	     *http://localhost:9092/venta/1003
+		/* venta 1003 existe, pero el empleado 676 NO EXISTE
+		 * 	{
+				"id": 1003,
+				"emp": 676,
+				"clien": 10203011,
+				"prod": 202,
+				"cantidad": 55
+			}
+	     *
+	     *Respuesta de excepcion del empleado
+	     * */
 
 	    String codigoEmpleado = String.valueOf(vent.getEmp());
 	    		
