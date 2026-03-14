@@ -22,7 +22,8 @@ import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
 import com.examen.avalos01.Exceptions.VentaEncontrada;
 import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
 import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
-
+import com.examen.avalos01.Exceptions.NoEsNumeroException;
+import com.examen.avalos01.Exceptions.NumeroNegativo;
 import com.examen.avalos01.Models.Empleado;
 import com.examen.avalos01.Models.Cliente;
 import com.examen.avalos01.Models.Producto;
@@ -76,6 +77,46 @@ public class VentaController {
 	@PostMapping("/venta")
 	public ResponseEntity<Object> nuevaVenta(@RequestBody Venta vent){
 		
+		String codigoVentaExistente = String.valueOf(vent.getId());
+		
+		//validación de que id es valor entero positivo
+		if (!codigoVentaExistente.matches("\\d+")) {
+			throw new NoEsNumeroException();
+		}
+		
+		String codEmpleado = String.valueOf(vent.getEmp());
+		//validación de que emp es valor entero positivo
+		if (!codEmpleado.matches("\\d+")) {
+			throw new NoEsNumeroException();
+		}
+
+		String codCliente = String.valueOf(vent.getClien());
+		//validación de que clien es valor entero positivo
+		if (!codCliente.matches("\\d+")) {
+			throw new NoEsNumeroException();
+		}
+		
+		String codProducto = String.valueOf(vent.getProd());
+		//validación de que prod es valor entero positivo
+		if (!codProducto.matches("\\d+")) {
+			throw new NoEsNumeroException();
+		}
+		
+		try {
+			String cantidadRecuperada = String.valueOf(vent.getCantidad());
+			double cantidadExistente = Double.parseDouble(cantidadRecuperada);
+
+		    if (cantidadExistente < 0) {
+		        throw new NumeroNegativo();
+		    }
+
+		} catch (NumberFormatException e) {
+		    throw new NoEsNumeroException();
+		}
+		
+		
+		
+		
 		/*
 	     * Para probar que salta el error de venta colocar lo siguiente:
 	     *
@@ -91,12 +132,12 @@ public class VentaController {
 	     *
 	     *Respuesta de excepcion de venta , que no permite crear venta con UN CÓDIGO EXISTENTE
 	     * */
-		String codigoVentaExistente = String.valueOf(vent.getId());
+		
 		
 		if (ventas.containsKey(codigoVentaExistente)) {
-			System.out.println("entra a la excepcion");
 			throw new VentaEncontrada();
 		}
+		
 		
 		
 		/*
@@ -178,6 +219,8 @@ public class VentaController {
 				.buildAndExpand(vent.getId())
 				.toUri();
 		return ResponseEntity.created(ubicacionRecurso).body(vent);
+
+		
 	}
 	
 	// /venta/{id} (PUT) —> Que edite un registro de venta mediante su ID, registro pasado en JSON.

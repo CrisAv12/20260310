@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class AcercaController {
+	@RequestMapping("")
+	@ResponseBody
+	public String entrada() {
+		return "Examen Spring Boot - Cristian Avalos";
+	}
+	
 	@RequestMapping("/")
 	@ResponseBody
 	public String bienvenida() {

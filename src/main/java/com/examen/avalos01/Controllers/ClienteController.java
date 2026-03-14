@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.examen.avalos01.Exceptions.ClienteEncontrado;
 import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
+import com.examen.avalos01.Exceptions.NoEsNumeroException;
+import com.examen.avalos01.Exceptions.VentaEncontrada;
 import com.examen.avalos01.Models.Cliente;
 
 import tools.jackson.databind.ObjectMapper;
@@ -54,6 +57,30 @@ public class ClienteController {
 	// Respuesta: 201 creado
 	@PostMapping("/cliente")
 	public ResponseEntity<Object> nuevoCliente(@RequestBody Cliente cli){
+		
+		/*
+	     * Para probar que salta el error de cliente colocar lo siguiente:
+	     *
+	     *http://localhost:9092/cliente
+		/* cliente con ese NIT YA EXISTE, lo demas también
+		 * 	{
+				"nit": 10203011,
+				"apellido": "Lopez"
+			}
+	     *
+	     *Respuesta de excepcion de cliente , que no permite crear cliente con UN CÓDIGO EXISTENTE
+	     * */
+		String nitExistente = String.valueOf(cli.getNit());
+		
+		if (clientes.containsKey(nitExistente)) {
+			throw new ClienteEncontrado();
+		}
+		
+		//validación de que nit es valor entero positivo
+		if (!nitExistente.matches("\\d+")) {
+	        throw new NoEsNumeroException();
+	    }
+		
 		clientes.put(cli.getNit() +"", cli);
 		URI ubicacionRecurso = ServletUriComponentsBuilder
 				.fromCurrentRequest()

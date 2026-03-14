@@ -5,8 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.examen.avalos01.Exceptions.ClienteEncontrado;
 import com.examen.avalos01.Exceptions.ClienteNoEncontradoException;
+import com.examen.avalos01.Exceptions.EmpleadoEncontrado;
 import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
+import com.examen.avalos01.Exceptions.NoEsNumeroException;
+import com.examen.avalos01.Exceptions.NumeroNegativo;
 import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
 import com.examen.avalos01.Exceptions.VentaNoEncontradaException;
 import com.examen.avalos01.Exceptions.VentaEncontrada;
@@ -48,6 +52,29 @@ public class EmpleadoExceptionController {
 	
 	}
 	
+	@ExceptionHandler(value=ClienteEncontrado.class)
+	public ResponseEntity<Object> clienteExcepcion(){
+		return new ResponseEntity<>("No se pudo registrar el cliente porque YA EXISTE un registro con ese código", HttpStatus.BAD_REQUEST);
 	
+	}
+	
+	
+	@ExceptionHandler(value=NoEsNumeroException.class)
+	public ResponseEntity<Object> numeroExcepcion(){
+		return new ResponseEntity<>("El valor ingresado NO ES UN NÚMERO", HttpStatus.BAD_REQUEST);
+	
+	}
+	
+	@ExceptionHandler(value=EmpleadoEncontrado.class)
+	public ResponseEntity<Object> empleaExcepcion(){
+		return new ResponseEntity<>("No se pudo registrar el empleado porque YA EXISTE un registro con ese código", HttpStatus.BAD_REQUEST);
+	
+	}
+	
+	@ExceptionHandler(value=NumeroNegativo.class)
+	public ResponseEntity<Object> negativoExcepcion(){
+		return new ResponseEntity<>("El valor ingresado ES NEGATIVO ", HttpStatus.BAD_REQUEST);
+	
+	}
 	
 }

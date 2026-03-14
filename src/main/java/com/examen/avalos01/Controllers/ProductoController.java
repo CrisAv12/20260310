@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
+import com.examen.avalos01.Exceptions.NoEsNumeroException;
+import com.examen.avalos01.Exceptions.NumeroNegativo;
+import com.examen.avalos01.Exceptions.ProductoEncontrado;
 import com.examen.avalos01.Exceptions.ProductoNoEncontradoException;
 import com.examen.avalos01.Models.Producto;
 
@@ -61,6 +63,43 @@ public class ProductoController {
 	// Respuesta: 201 creado
 	@PostMapping("/producto")
 	public ResponseEntity<Object> nuevoProducto(@RequestBody Producto pro){
+			/* Para probar que salta el error de producto colocar lo siguiente:
+		     *
+		     *http://localhost:9092/cliente
+			/* cliente con ese codigo YA EXISTE
+			 * 	{
+					"codigo": 303,
+					"nombre": "Pomada crema",
+					"precio": 16.22
+				}
+		     *
+		     *Respuesta de excepcion de producto , que no permite crear nuevo producto con UN CÓDIGO EXISTENTE
+		     * */
+			String codExistente = String.valueOf(pro.getCodigo());
+			
+			if (productos.containsKey(codExistente)) {
+				throw new ProductoEncontrado();
+			}
+			
+			//validación de que precio es valor double positivo
+			if (!codExistente.matches("\\d+")) {
+		        throw new NoEsNumeroException();
+		    }
+			
+			try {
+				String precioRecuperado = String.valueOf(pro.getPrecio());
+				double precioExistente = Double.parseDouble(precioRecuperado);
+
+			    if (precioExistente < 0) {
+			        throw new NumeroNegativo();
+			    }
+
+			} catch (NumberFormatException e) {
+			    throw new NoEsNumeroException();
+			}
+		
+		
+		
 		productos.put(pro.getCodigo() +"", pro);
 		URI ubicacionRecurso = ServletUriComponentsBuilder
 				.fromCurrentRequest()

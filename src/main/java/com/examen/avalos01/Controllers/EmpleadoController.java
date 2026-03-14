@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.examen.avalos01.Exceptions.EmpleadoEncontrado;
 import com.examen.avalos01.Exceptions.EmpleadoNoEncontradoException;
+import com.examen.avalos01.Exceptions.NoEsNumeroException;
 import com.examen.avalos01.Models.Empleado;
 
 import tools.jackson.databind.ObjectMapper;
@@ -59,6 +61,39 @@ public class EmpleadoController {
 	// Respuesta: 201 creado
 	@PostMapping("/empleados")
 	public ResponseEntity<Object> nuevoEmpleado(@RequestBody Empleado emple){
+	     /* Para probar que salta el error de empleado existente colocar lo siguiente:
+	     *
+	     *http://localhost:9092/empleados
+		/* cliente con ese CI YA EXISTE, asumiendo CI como clave primaria
+		 * 	{
+				"ci": 3,
+				"nombre": "Daniel",
+				"apellido": "Ruiz ",
+				"telefono": 70400004,
+				"email": "druiz@mail.com"
+			}
+	     *
+	     *Respuesta de excepcion de empleado , que no permite crear empleado con UN CI EXISTENTE
+	     * */
+		String ciExistente = String.valueOf(emple.getCi());
+		
+		if (empleados.containsKey(ciExistente)) {
+			throw new EmpleadoEncontrado();
+		}
+		
+		//validación de que ci es valor entero positivo
+		if (!ciExistente.matches("\\d+")) {
+	        throw new NoEsNumeroException();
+	    }
+		
+		
+		//validación de que telefono es valor entero positivo
+		String telefonoExistente = String.valueOf(emple.getTelefono());
+		if (!telefonoExistente.matches("\\d+")) {
+			throw new NoEsNumeroException();
+		}
+		
+		
 		empleados.put(emple.getCi() +"", emple);
 		URI ubicacionRecurso = ServletUriComponentsBuilder
 				.fromCurrentRequest()
